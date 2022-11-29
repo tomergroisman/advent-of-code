@@ -1,6 +1,6 @@
 import run from 'aocrunner';
 
-import { splitRows } from '../utils/index.js';
+import { string } from '../utils/index.js';
 
 enum CommandType {
   Forward,
@@ -20,7 +20,7 @@ const commandTypeStringToCommandTypeEnum = {
 };
 
 const parseInput = (rawInput: string) => {
-  const rawInputSplit: string[] = splitRows(rawInput);
+  const rawInputSplit: string[] = string.splitRows(rawInput);
   const commands: Command[] = [];
 
   for (const row of rawInputSplit) {

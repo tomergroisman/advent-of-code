@@ -1,8 +1,8 @@
 import run from 'aocrunner';
-import { splitRows } from '../utils';
+import { string } from '../utils';
 
 const parseInput = (rawInput: string): number[] =>
-  splitRows(rawInput).map(parseFloat);
+  string.splitRows(rawInput).map(parseFloat);
 
 const part1 = (rawInput: string) => {
   const input = parseInput(rawInput);
