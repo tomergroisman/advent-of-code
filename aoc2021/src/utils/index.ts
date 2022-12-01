@@ -40,4 +40,11 @@ export const number = {
   binaryToDecimal(binary: string): number {
     return parseInt(binary, 2);
   },
+
+  sumArray(array: number[]): number {
+    return array.reduce(
+      (previousValue, currentValue) => previousValue + currentValue,
+      0,
+    );
+  },
 };
