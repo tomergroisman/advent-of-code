@@ -8,6 +8,9 @@
   },
   "author": "Tomer Groisman",
   "license": "ISC",
+  "devDependencies": {
+    "prettier": "^2.4.1"
+  },
   "dependencies": {
     "aocrunner": "^1.6.1"
   }

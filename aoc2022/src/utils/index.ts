@@ -29,3 +29,22 @@
  *     import { myUtil } from '../utils'
  *
  */
+
+export const string = {
+  splitRows(rawInput: string): string[] {
+    return rawInput.split('\n');
+  },
+};
+
+export const number = {
+  binaryToDecimal(binary: string): number {
+    return parseInt(binary, 2);
+  },
+
+  sumArray(array: number[]): number {
+    return array.reduce(
+      (previousValue, currentValue) => previousValue + currentValue,
+      0,
+    );
+  },
+};
