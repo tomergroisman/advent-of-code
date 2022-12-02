@@ -30,9 +30,19 @@
  *
  */
 
+import _ from 'lodash';
+
 export const string = {
-  splitRows(rawInput: string): string[] {
-    return rawInput.split('\n');
+  splitComma(input: string): string[] {
+    return this.splitDelimiter(input, ',');
+  },
+
+  splitDelimiter(input: string, delimiter: string): string[] {
+    return input.split(delimiter);
+  },
+
+  splitRows(input: string): string[] {
+    return this.splitDelimiter(input, '\n');
   },
 };
 
@@ -46,5 +56,12 @@ export const number = {
       (previousValue, currentValue) => previousValue + currentValue,
       0,
     );
+  },
+
+  getMinMax(array: number[]): { min: number; max: number } {
+    return {
+      min: _.min(array)!,
+      max: _.max(array)!,
+    };
   },
 };
