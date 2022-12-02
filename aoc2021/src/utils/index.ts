@@ -32,19 +32,27 @@
 
 import _ from 'lodash';
 
-export const string = {
-  splitComma(input: string): string[] {
-    return this.splitDelimiter(input, ',');
-  },
-
-  splitDelimiter(input: string, delimiter: string): string[] {
+export const string = (() => {
+  function _splitDelimiter(input: string, delimiter: string): string[] {
     return input.split(delimiter);
-  },
+  }
 
-  splitRows(input: string): string[] {
-    return this.splitDelimiter(input, '\n');
-  },
-};
+  return {
+    splitComma(input: string): string[] {
+      return _splitDelimiter(input, ',');
+    },
+
+    splitDelimiter: _splitDelimiter,
+
+    splitSpaces(input: string): string[] {
+      return _splitDelimiter(input, ' ');
+    },
+
+    splitRows(input: string): string[] {
+      return _splitDelimiter(input, '\n');
+    },
+  };
+})();
 
 export const number = {
   binaryToDecimal(binary: string): number {
