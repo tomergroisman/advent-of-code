@@ -1,5 +1,6 @@
 import run from 'aocrunner';
-import { string } from '../utils';
+
+import { string } from '../utils/index.js';
 
 const parseInput = (rawInput: string): number[] =>
   string.splitRows(rawInput).map(parseFloat);

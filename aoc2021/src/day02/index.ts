@@ -86,7 +86,6 @@ const part2 = (rawInput: string) => {
         break;
       }
     }
-    console.log(progress);
   }
 
   return progress.horizontal * progress.vertical;

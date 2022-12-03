@@ -1,6 +1,5 @@
 import run from 'aocrunner';
-
-import { number } from '../utils/index.js';
+import _ from 'lodash';
 
 const parseInput = (rawInput: string) => rawInput.split(',').map(parseFloat);
 
@@ -33,7 +32,7 @@ const calculateFishCount = (cycles: number[], days: number = 80): number => {
     fishCycleCount[6] += fishToDouble;
   }
 
-  return number.sumArray(fishCycleCount);
+  return _.sum(fishCycleCount);
 };
 
 const part1 = (rawInput: string) => {
