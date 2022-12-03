@@ -1,6 +1,5 @@
 import run from 'aocrunner';
-
-import { number } from '../utils/index.js';
+import _ from 'lodash';
 
 const parseInput = (rawInput: string): number[][] => {
   return rawInput.split('\n\n').map((it) => it.split('\n').map(parseFloat));
@@ -11,7 +10,7 @@ const part1 = (rawInput: string) => {
   let maxCalories: number = 0;
 
   for (const elfCalories of elvesCalories) {
-    const elfCaloriesSum: number = number.sumArray(elfCalories);
+    const elfCaloriesSum: number = _.sum(elfCalories);
     maxCalories = Math.max(elfCaloriesSum, maxCalories);
   }
 
@@ -20,11 +19,9 @@ const part1 = (rawInput: string) => {
 
 const part2 = (rawInput: string) => {
   const elvesCalories: number[][] = parseInput(rawInput);
-  const caloriesSums: number[] = elvesCalories
-    .map(number.sumArray)
-    .sort((a, b) => b - a);
+  const caloriesSums: number[] = elvesCalories.map(_.sum).sort((a, b) => b - a);
 
-  return number.sumArray(caloriesSums.slice(0, 3));
+  return _.sum(caloriesSums.slice(0, 3));
 };
 
 run({

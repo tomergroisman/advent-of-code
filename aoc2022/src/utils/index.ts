@@ -51,13 +51,6 @@ export const number = {
     return parseInt(binary, 2);
   },
 
-  sumArray(array: number[]): number {
-    return array.reduce(
-      (previousValue, currentValue) => previousValue + currentValue,
-      0,
-    );
-  },
-
   getMinMax(array: number[]): { min: number; max: number } {
     return {
       min: _.min(array)!,

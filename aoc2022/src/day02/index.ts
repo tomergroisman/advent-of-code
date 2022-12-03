@@ -1,6 +1,7 @@
 import run from 'aocrunner';
+import _ from 'lodash';
 
-import { number, string } from '../utils/index.js';
+import { string } from '../utils/index.js';
 
 enum Action {
   Rock = 1,
@@ -96,7 +97,7 @@ const part1 = (rawInput: string) => {
       }) as Action[],
   );
 
-  return number.sumArray(input.map(playRound));
+  return _.sum(input.map(playRound));
 };
 
 const part2 = (rawInput: string) => {
@@ -122,7 +123,7 @@ const part2 = (rawInput: string) => {
     )
     .map((it) => [it[0] as Action, chooseAction(it) as Action]);
 
-  return number.sumArray(input.map(playRound));
+  return _.sum(input.map(playRound));
 };
 
 run({
