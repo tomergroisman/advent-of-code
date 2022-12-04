@@ -1,27 +1,13 @@
 import run from 'aocrunner';
 import _ from 'lodash';
 
-import { string } from '../utils/index.js';
+import { matrix, string } from '../utils/index.js';
 
 const parseInput = (rawInput: string): number[][] => {
-  const generateInfiniteRow = (length: number): number[] => {
-    return new Array(length).fill(Infinity);
-  };
-
   const points: number[][] = string
     .splitRows(rawInput)
     .map((it) => it.split('').map(parseFloat));
-  const pointsInRow: number = points[0].length;
-
-  points.unshift(generateInfiniteRow(pointsInRow));
-  points.push(generateInfiniteRow(pointsInRow));
-
-  points.forEach((it) => {
-    it.unshift(Infinity);
-    it.push(Infinity);
-  });
-
-  return points;
+  return matrix.padWith(points, Infinity);
 };
 
 const isLowPoint = (

@@ -66,3 +66,23 @@ export const number = {
     };
   },
 };
+
+export const matrix = {
+  padWith<P, T>(matrix: (P | T)[][], pad: P): (P | T)[][] {
+    const generatePadRow = (length: number) => {
+      return new Array(length).fill(pad);
+    };
+
+    const m: number = matrix[0].length;
+
+    matrix.unshift(generatePadRow(m));
+    matrix.push(generatePadRow(m));
+
+    matrix.forEach((it) => {
+      it.unshift(pad);
+      it.push(pad);
+    });
+
+    return matrix;
+  },
+};
