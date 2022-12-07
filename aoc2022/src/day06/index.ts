@@ -5,24 +5,18 @@ const parseInput = (rawInput: string) => {
 };
 
 const findFirstNDistinctChars = (chars: string[], n: number) => {
-  const sequence = [];
-
-  for (let i = 0; i < chars.length; i++) {
-    const char = chars[i];
-
-    sequence.push(char);
-    if (sequence.length > n) {
-      sequence.shift();
-    }
+  for (let i = n; i < chars.length; i++) {
+    const candidate = chars.slice(i - n, i);
 
     const charCount: any = {};
-    sequence.forEach((it) => {
+    candidate.forEach((it) => {
       charCount[it] ??= 0;
       charCount[it]++;
     });
+
     let isAllDifferent = Object.keys(charCount).length === n;
     if (isAllDifferent) {
-      return i + 1;
+      return i;
     }
   }
 };

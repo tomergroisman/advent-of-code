@@ -3,7 +3,9 @@ import _ from 'lodash';
 
 import { string } from '../utils/index.js';
 
-const parseInput = (rawInput: string) => rawInput;
+const parseInput = (rawInput: string) => {
+  return rawInput;
+};
 
 const part1 = (rawInput: string) => {
   const input = parseInput(rawInput);
@@ -21,7 +23,8 @@ run({
   part1: {
     tests: [
       // {
-      //   input: ``,
+      //   input: `
+      // `,
       //   expected: "",
       // },
     ],
@@ -30,12 +33,13 @@ run({
   part2: {
     tests: [
       // {
-      //   input: ``,
+      //   input: `
+      // `,
       //   expected: "",
       // },
     ],
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: false,
+  onlyTests: true,
 });
