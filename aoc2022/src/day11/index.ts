@@ -6,19 +6,19 @@ import { string } from '../utils/index.js';
 interface Monkey {
   startingItems: number[];
   operation: (old: number) => number;
-  test: (worryLevel: number) => { nextMonkeyIndex: number; divider?: number };
+  test: (worryLevel: number) => number;
 }
 
-const parseInput = (rawInput: string, minify = false) => {
+const parseInput = (rawInput: string) => {
   const monkeys: Monkey[] = [];
+  let n = 1;
   string
     .splitDelimiter(rawInput, '\n\n')
     .map((it) => string.splitDelimiter(it.replace(/\n/g, ''), '  '))
     .forEach((it) => {
       const startingItems: number[] = string
         .splitDelimiter(it[1].replace('Starting items: ', ''), ', ')
-        .map(parseFloat)
-        .map((it) => (minify ? Math.log(it) : it));
+        .map(parseFloat);
 
       const operationEval: string = it[2]
         .replace('Operation: ', '')
@@ -38,12 +38,14 @@ const parseInput = (rawInput: string, minify = false) => {
 
       const test = (
         worryLevel: number,
-      ): { nextMonkeyIndex: number; divider?: number } => {
+      ): number => {
         if (worryLevel % testDivider === 0) {
-          return { nextMonkeyIndex: monkeyIndexIfTrue, divider: testDivider };
+          return monkeyIndexIfTrue;
         }
-        return { nextMonkeyIndex: monkeyIndexIfFalse };
+        return monkeyIndexIfFalse;
       };
+
+      n*= testDivider;
 
       const monkey: Monkey = {
         startingItems,
@@ -54,37 +56,35 @@ const parseInput = (rawInput: string, minify = false) => {
       monkeys.push(monkey);
     });
 
-  return monkeys;
+  return {monkeys, n};
 };
 
-const playRound = (monkeys: Monkey[], inspections: number[], relief = 1) => {
+const playRound = (monkeys: Monkey[], n: number, inspections: number[], relief = 1) => {
   for (let i = 0; i < monkeys.length; i++) {
     const monkey = monkeys[i];
     const startingItems = _.cloneDeep(monkey.startingItems);
     for (const item of startingItems) {
       inspections[i]++;
       let newWorryLevel = Math.floor(monkey.operation(item) / relief);
-      const { nextMonkeyIndex, divider } = monkey.test(newWorryLevel);
-
-      if (divider) {
-        newWorryLevel = divider;
-      }
+      const nextMonkeyIndex = monkey.test(newWorryLevel);
 
       monkeys[i].startingItems.shift();
       monkeys[nextMonkeyIndex].startingItems.push(newWorryLevel);
     }
   }
+  for (let i = 0; i < monkeys.length; i++) {
+    monkeys[i].startingItems = monkeys[i].startingItems.map(it => it % n);
+  }
 };
 
 const part1 = (rawInput: string) => {
-  const monkeys = parseInput(rawInput);
+  const {monkeys, n} = parseInput(rawInput);
   const inspections = new Array(monkeys.length).fill(0);
   const nRounds = 20;
 
   for (let i = 0; i < nRounds; i++) {
-    playRound(monkeys, inspections, 3);
+    playRound(monkeys, n, inspections, 3);
   }
-  console.log(monkeys, inspections);
 
   const mostActiveMonkey = _.max(inspections);
   const secondMostActiveMonkey = _.max(
@@ -95,21 +95,20 @@ const part1 = (rawInput: string) => {
 };
 
 const part2 = (rawInput: string) => {
-  // const monkeys = parseInput(rawInput, true);
-  // const inspections = new Array(monkeys.length).fill(0);
-  // const nRounds = 20;
-  //
-  // for (let i = 0; i < nRounds; i++) {
-  //   playRound(monkeys, inspections);
-  // }
-  // console.log(monkeys, inspections);
-  //
-  // const mostActiveMonkey = _.max(inspections);
-  // const secondMostActiveMonkey = _.max(
-  //   inspections.filter((it) => it !== mostActiveMonkey),
-  // );
-  //
-  // return mostActiveMonkey * secondMostActiveMonkey;
+  const {monkeys, n} = parseInput(rawInput);
+  const inspections = new Array(monkeys.length).fill(0);
+  const nRounds = 10000;
+
+  for (let i = 0; i < nRounds; i++) {
+    playRound(monkeys,n, inspections);
+  }
+
+  const mostActiveMonkey = _.max(inspections);
+  const secondMostActiveMonkey = _.max(
+    inspections.filter((it) => it !== mostActiveMonkey),
+  );
+
+  return mostActiveMonkey * secondMostActiveMonkey;
 };
 
 run({
@@ -188,5 +187,5 @@ run({
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 });
