@@ -60,6 +60,21 @@ const compare = (signal: Signal[]): boolean | undefined => {
   }
 };
 
+const sort = (a: Signal, b: Signal): number => {
+  const isRightOrder = compare([a, b]);
+
+  if (isRightOrder === undefined) {
+    return 0;
+  }
+  return isRightOrder ? -1 : 1;
+};
+
+const getArrayDepth = <T>(value: Array<T> | T): number => {
+  return Array.isArray(value)
+    ? 1 + Math.max(0, ...value.map(getArrayDepth))
+    : 0;
+};
+
 const part1 = (rawInput: string) => {
   const signals = parseInput(rawInput);
   const indices: number[] = [];
@@ -80,28 +95,15 @@ const part2 = (rawInput: string) => {
   signals.forEach((signal) => {
     packets.push(signal[0], signal[1]);
   });
+  packets.push([[2]], [[6]]);
 
-  const flatPackets = packets.map(_.flattenDeep);
-  const sorted = _.cloneDeep(flatPackets).sort((a, b) => {
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) {
-        return a[i] - b[i];
-      }
-    }
-    return -1;
-  });
-
-  const firstDigit = sorted.map((it) => it[0]);
-  sorted.splice(
-    firstDigit.findIndex((it) => it >= 2),
-    0,
-    [2],
-  );
-  sorted.splice(firstDigit.findIndex((it) => it >= 6) + 1, 0, [6]);
+  const sorted = packets.sort(sort);
 
   return (
-    (sorted.findIndex((it) => it[0] === 2) + 1) *
-    (sorted.findIndex((it) => it[0] === 6) + 1)
+    // @ts-ignore
+    (sorted.findIndex((it) => it?.[0]?.[0] === 2) + 1) *
+    // @ts-ignore
+    (sorted.findIndex((it) => it?.[0]?.[0] === 6) + 1)
   );
 };
 
