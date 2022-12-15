@@ -5,6 +5,7 @@ import { string } from '../utils/index.js';
 
 type Point = { x: number; y: number };
 type SensorBeacon = Point[];
+type SensorDistance = { sensor: Point; distance: number };
 
 const parseInput = (rawInput: string) => {
   return string.splitRows(rawInput).map((it) =>
@@ -77,41 +78,57 @@ const part1 = (rawInput: string) => {
 
 const part2 = (rawInput: string) => {
   const sensorsBeacons: SensorBeacon[] = parseInput(rawInput);
-  const n = 20;
+  const aCoeffs: number[] = [];
+  const bCoeffs: number[] = [];
+  const sensorDistance: SensorDistance[] = [];
 
-  for (let row = 0; row < n; row++) {
-    const noBeaconsPoints: Record<string, boolean> = {};
-    for (const sensorBeacon of sensorsBeacons) {
-      const [sensor, beacon] = sensorBeacon;
-      if (isCandidate(row, sensorBeacon)) {
-        const xDistance = Math.abs(sensor.x - beacon.x);
-        const yDistance = Math.abs(sensor.y - beacon.y);
-        const distance = xDistance + yDistance;
+  sensorsBeacons.forEach((sensorBeacon) => {
+    const [sensor, beacon] = sensorBeacon;
+    const xDistanceBeaconFromSensor = Math.abs(sensor.x - beacon.x);
+    const yDistanceBeaconFromSensor = Math.abs(sensor.y - beacon.y);
+    const maxDistanceBeaconFromSensor =
+      xDistanceBeaconFromSensor + yDistanceBeaconFromSensor + 1;
 
-        for (let i = 0; i <= distance; i++) {
-          const y1 = sensor.y + i;
-          const y2 = sensor.y - i;
-          if (y1 === row || y2 === row) {
-            for (let j = 0; j <= distance - i; j++) {
-              const point1 = { x: sensor.x - j, y: n };
-              const point2 = { x: sensor.x + j, y: n };
-              noBeaconsPoints[extractKey(point1)] ??= true;
-              noBeaconsPoints[extractKey(point2)] ??= true;
-            }
-          }
+    aCoeffs.push(sensor.y - sensor.x + maxDistanceBeaconFromSensor);
+    aCoeffs.push(sensor.y - sensor.x - maxDistanceBeaconFromSensor);
+
+    bCoeffs.push(sensor.x + sensor.y + maxDistanceBeaconFromSensor);
+    bCoeffs.push(sensor.x + sensor.y - maxDistanceBeaconFromSensor);
+
+    sensorDistance.push({ sensor, distance: maxDistanceBeaconFromSensor });
+  });
+
+  const n = 4000000;
+
+  for (const a of aCoeffs) {
+    for (const b of bCoeffs) {
+      const intersectionX = (b - a) / 2;
+      const intersectionY = (a + b) / 2;
+
+      if (
+        intersectionX >= 0 &&
+        intersectionX <= n &&
+        intersectionY >= 0 &&
+        intersectionY <= n
+      ) {
+        let foundMissingBeacon = true;
+        for (const { sensor, distance } of sensorDistance) {
+          const distanceFromIntersectionPointX = Math.abs(
+            sensor.x - intersectionX,
+          );
+          const distanceFromIntersectionPointY = Math.abs(
+            sensor.y - intersectionY,
+          );
+          const maxDistanceBeaconFromIntersection =
+            distanceFromIntersectionPointX + distanceFromIntersectionPointY;
+
+          if (maxDistanceBeaconFromIntersection < distance)
+            foundMissingBeacon = false;
+        }
+        if (foundMissingBeacon) {
+          return intersectionX * 4000000 + intersectionY;
         }
       }
-      if (beacon.y === n) {
-        noBeaconsPoints[extractKey(beacon)] = false;
-      }
-    }
-
-    console.log(noBeaconsPoints);
-    if (
-      _.entries(noBeaconsPoints).filter(([, value]) => !!value).length ===
-      n - 1
-    ) {
-      return row;
     }
   }
 };
@@ -159,12 +176,12 @@ run({
           Sensor at x=16, y=7: closest beacon is at x=15, y=3
           Sensor at x=14, y=3: closest beacon is at x=15, y=3
           Sensor at x=20, y=1: closest beacon is at x=15, y=3
-      `,
-        expected: '',
+          `,
+        expected: 56000011,
       },
     ],
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 });
